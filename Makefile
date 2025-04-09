@@ -34,6 +34,13 @@ OBJS = \
 # Using native tools (e.g., on X86 Linux)
 #TOOLPREFIX = 
 
+# My Code
+# Parameters for priority scheduling:
+INIT_PRIORITY = 100
+ALPHA = 1
+BETA = 2
+CFLAGS += -DINIT_PRIORITY=$(INIT_PRIORITY) -DALPHA=$(ALPHA) -DBETA=$(BETA)
+
 # Try to infer the correct TOOLPREFIX if not set
 ifndef TOOLPREFIX
 TOOLPREFIX := $(shell if i386-jos-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/dev/null 2>&1; \
@@ -217,7 +224,7 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 	then echo "-gdb tcp::$(GDBPORT)"; \
 	else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
-CPUS := 2
+CPUS := 1
 endif
 QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512 $(QEMUEXTRA)
 
