@@ -36,3 +36,5 @@
 #define IRQ_ERROR       19
 #define IRQ_SPURIOUS    31
 
+// Custom Interrupt
+#define T_CUSTOM_EVENT  20

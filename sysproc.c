@@ -89,3 +89,21 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// My Code
+int
+sys_signal(void)
+{
+  char *handler;
+  if (argptr(0, &handler, sizeof(void(*)())) < 0)
+    return -1;
+  myproc()->custom_handler = (void(*)())handler;
+  return 0;
+}
+
+int sys_sigret(void) {
+  struct proc *p = myproc();
+  // Restore saved trapframe
+  p->tf = p->saved_eip;
+  return 0;
+}

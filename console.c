@@ -195,6 +195,37 @@ consoleintr(int (*getc)(void))
 
   acquire(&cons.lock);
   while((c = getc()) >= 0){
+
+    if(c == '\003') {  // Ctrl+C (ETX)
+      // Signal code will go here
+      release(&cons.lock);
+      cprintf("Ctrl-C is detected by xv6\n");
+      broadcast_signal(1);
+      acquire(&cons.lock);
+      continue;
+    } else if(c == C('B')) {  // Ctrl+Z (SUB)
+      // Signal code will go here
+      release(&cons.lock);
+      cprintf("Ctrl-B is detected by xv6\n");
+      broadcast_signal(2);
+      acquire(&cons.lock);
+      continue;
+    } else if(c == '\006') {  // Ctrl+F (ACK)
+      // Signal code will go here
+      release(&cons.lock);
+      cprintf("Ctrl-F is detected by xv6\n");
+      broadcast_signal(3);
+      acquire(&cons.lock);
+      continue;
+    }
+    else if(c == C('G')) {  // Ctrl+F (ACK)
+      // Signal code will go here
+      release(&cons.lock);
+      cprintf("Ctrl-G is detected by xv6\n");
+      broadcast_signal(4);
+      acquire(&cons.lock);
+      continue;
+    }
     switch(c){
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later

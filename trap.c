@@ -53,6 +53,8 @@ trap(struct trapframe *tf)
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
+
+      update_waiting_time();
     }
     lapiceoi();
     break;
@@ -92,6 +94,18 @@ trap(struct trapframe *tf)
             myproc()->pid, myproc()->name, tf->trapno,
             tf->err, cpuid(), tf->eip, rcr2());
     myproc()->killed = 1;
+  }
+
+  // My Code
+  // Updating CPU ticks 
+  if(myproc() && myproc()->state == RUNNING) {
+    myproc()->cpu_ticks_used++;
+    
+    // Check execution time limit if set
+    if(myproc()->exec_time > 0 && myproc()->cpu_ticks_used >= myproc()->exec_time) {
+      // Send SIGINT to terminate the process
+      myproc()->killed = 1;
+    }
   }
 
   // Force process exit if it has been killed and is in user space.
